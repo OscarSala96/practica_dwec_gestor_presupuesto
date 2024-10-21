@@ -16,10 +16,13 @@ function mostrarPresupuesto() {
     return "Tu presupuesto actual es de " + presupuesto + " €";
 }
 
-function CrearGasto(descripcion, valor, fecha, etiquetas) {
+function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
 
 this.valor = (valor >=0) ? valor : 0;
 this.descripcion = descripcion;
+this.etiquetas= etiquetas.length > 0 ? etiquetas:[];
+this.fecha = isNaN(Date.parse(fecha)) ? Date.now() : Date.parse(fecha);
+
     this.actualizarDescripcion = function(desc){
         this.descripcion = desc;
     }
@@ -29,22 +32,59 @@ this.descripcion = descripcion;
     this.mostrarGasto=function(){
         return "Gasto correspondiente a " + this.descripcion + " con valor " + this.valor + " €";
     }
+    this.anyadirEtiquetas = function(...nuevasEtiquetas){
+        for(let i=0; i<nuevasEtiquetas.length; i++){
+            if(!this.etiquetas.includes(nuevasEtiquetas[i])){
+                this.etiquetas.push(nuevasEtiquetas[i]);
+            }
+        }
+    }
+    this.mostrarGastoCompleto = function(){
+        return "Gasto correspondiente a " + this.descripcion + " con valor " + this.valor + " €.\n" +
+        "Fecha: " + new Date(this.fecha).toLocaleString() +
+        "\nEtiquetas:\n" + "- " + this.etiquetas.join("\n- ");
+    }
+    this.actualizarFecha = function(fecha){
+        this.fecha = isNaN(Date.parse(fecha)) ? this.fecha : Date.parse(fecha);
+    }
+    this.borrarEtiquetas = function(...borrarEtiquetas){
+        for(let i=0; i<borrarEtiquetas.length;i++){
+            for(let j=0; j<this.etiquetas.length;j++){
+                if(this.etiquetas[j]==borrarEtiquetas[i]){
+                    this.etiquetas.splice(j,1);
+                    j--
+                }
+            }
 
+            }
+        }
 }
 function listarGastos(){
-return gastos;
+    return gastos;
 }
-function anyadirGasto(){
+function anyadirGasto(gasto){
+    gasto.id = idGasto;
+    idGasto++;
+    gastos.push(gasto);
 
 }
-function borrarGasto(){
-
+function borrarGasto(id){
+    for(let i=0;i<gastos.length;i++){
+        if(gastos[i].id == id){
+        gastos.splice(i,1);
+        }
+    }
 }
 function calcularTotalGastos(){
-
+let sumaGastos = 0;
+for(let i=0;i<gastos.length;i++){
+    sumaGastos+= gastos[i].valor;
+}
+return sumaGastos;
 }
 function calcularBalance(){
-
+let balance = presupuesto - calcularTotalGastos();
+return balance;
 }
 
 // NO MODIFICAR A PARTIR DE AQUÍ: exportación de funciones y objetos creados para poder ejecutar los tests.
