@@ -98,9 +98,52 @@ function calcularBalance(){
 let balance = presupuesto - calcularTotalGastos();
 return balance;
 }
-function filtrarGastos(){
+function filtrarGastos(datos){
+    return gastos.filter(function(d){
+        let result = true;
+        if(datos.fechaDesde){
+            let fecha = Date.parse(datos.fechaDesde);
+            result = result && (d.fecha >= fecha);
+        }
+        if(datos.fechaHasta){
+            let fecha= Date.parse(datos.fechaHasta);
+            result= result && (d.fecha <= fecha);
+        }
+        if(datos.valorMinimo){
+            result = result && (d.valor >= datos.valorMinimo);
+        }
+        if(datos.valorMaximo){
+            result = result && (d.valor <= datos.valorMaximo);
+        }
+        if(datos.descripcionContiene){
+            result = result && (d.descripcion.indexOf(datos.descripcionContiene) >= 0);
+        }
+        if(datos.etiquetasTiene){
+            let etiq = false;
+            for(let e of datos.etiquetasTiene){
+                if(d.etiquetas.indexOf(e) >= 0){
+                    etiq=true;
+                }               
+            }
+            result = result && etiq;
+        }
+        return result;
+    })
 }
-function agruparGastos(){
+function agruparGastos(periodo, etiquetas, fechaDesde, fechaHasta){
+    let grupoGastos = filtrarGastos({etiquetasTiene: etiquetas, fechaDesde:fechaDesde, fechaHasta:fechaHasta});
+    return grupoGastos.reduce(function(acc,gasto){
+        let per = gasto.obtenerPeriodoAgrupacion(periodo);
+        if(acc[per]){
+            acc[per] = acc[per] + gasto.valor;
+        }
+        else{
+            acc[per] = gasto.valor;
+        }
+        return acc;
+        },{}
+    )
+    
 }
 
 // NO MODIFICAR A PARTIR DE AQUÍ: exportación de funciones y objetos creados para poder ejecutar los tests.
