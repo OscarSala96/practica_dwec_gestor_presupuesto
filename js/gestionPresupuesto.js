@@ -58,14 +58,26 @@ this.fecha = isNaN(Date.parse(fecha)) ? Date.now() : Date.parse(fecha);
 
             }
         }
-}
+        this.obtenerPeriodoAgrupacion = function(periodo){
+            let fechaNueva = new Date(this.fecha);
+          if(!periodo || periodo == 'mes'){
+            return fechaNueva.toISOString().substr(0,7);
+          }
+          if(!periodo || periodo == 'anyo'){
+            return fechaNueva.toISOString().substr(0,4);
+          }
+          if(!periodo || periodo == 'dia'){
+            return fechaNueva.toISOString().substr(0,10);
+          }
+            }
+        }
 function listarGastos(){
     return gastos;
 }
-function anyadirGasto(gasto){
-    gasto.id = idGasto;
+function anyadirGasto(datos){
+    datos.id = idGasto;
     idGasto++;
-    gastos.push(gasto);
+    gastos.push(datos);
 
 }
 function borrarGasto(id){
@@ -86,6 +98,10 @@ function calcularBalance(){
 let balance = presupuesto - calcularTotalGastos();
 return balance;
 }
+function filtrarGastos(){
+}
+function agruparGastos(){
+}
 
 // NO MODIFICAR A PARTIR DE AQUÍ: exportación de funciones y objetos creados para poder ejecutar los tests.
 // Las funciones y objetos deben tener los nombres que se indican en el enunciado
@@ -98,5 +114,7 @@ export   {
     anyadirGasto,
     borrarGasto,
     calcularTotalGastos,
-    calcularBalance
+    calcularBalance,
+    filtrarGastos,
+    agruparGastos
 }
