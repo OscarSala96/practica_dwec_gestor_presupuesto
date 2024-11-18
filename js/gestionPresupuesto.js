@@ -56,9 +56,9 @@ this.fecha = isNaN(Date.parse(fecha)) ? Date.now() : Date.parse(fecha);
                 }
             }
 
-            }
         }
-        this.obtenerPeriodoAgrupacion = function(periodo){
+    }
+    this.obtenerPeriodoAgrupacion = function(periodo){
             let fechaNueva = new Date(this.fecha);
           if(!periodo || periodo == 'mes'){
             return fechaNueva.toISOString().substr(0,7);

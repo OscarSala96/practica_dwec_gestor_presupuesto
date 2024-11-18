@@ -1,11 +1,9 @@
-function mostrarDatoEnID(valor,id){
+function mostrarDatoEnID(id, valor){
 let idElemento = document.getElementById(id);
-if(idElemento)
 idElemento.textContent=valor;
 }
 function mostrarGastoWeb(id, gasto){
 let idElemento = document.getElementById(id);
-if(idElemento){
 let divGasto = document.createElement("div");
 divGasto.classList.add("gasto");
 let divDescripción = document.createElement("div");
@@ -27,14 +25,13 @@ let divEtiquetas = document.createElement("div");
 divEtiquetas.classList.add("gasto-etiqueta");
 gasto.etiquetas.forEach(etiqueta => {
     spanEtiqueta = document.createElement("span");
-    spanEtiqueta.classList.add("gasto.etiquetas-etiquetas");
+    spanEtiqueta.classList.add("gasto-etiquetas-etiquetas");
     spanEtiqueta.textContent=etiqueta;
     divEtiquetas.appendChild(spanEtiqueta);
 });
 divGasto.appendChild(divEtiquetas);
 
 idElemento.appendChild(divGasto);
-};
 }
 function mostrarGastosAgrupadosWeb(id, agrup, periodo){
 let idElemento= document.getElementById(id);
@@ -50,7 +47,7 @@ Object.entries(agrup).forEach(([clave, valor])=>{
     divDato.classList.add("agrupacion-dato");
 
     let spanClave = document.createElement("span");
-    spanClave.classList.add=("agrupacion-dato-clave");
+    spanClave.classList.add("agrupacion-dato-clave");
     spanClave.textContent= clave;
 
     let spanValor = document.createElement("span");
