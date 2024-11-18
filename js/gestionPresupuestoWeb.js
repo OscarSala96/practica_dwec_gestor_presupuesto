@@ -22,10 +22,10 @@ divValor.textContent = gasto.valor;
 divGasto.appendChild(divValor);
 
 let divEtiquetas = document.createElement("div");
-divEtiquetas.classList.add("gasto-etiqueta");
+divEtiquetas.classList.add("gasto-etiquetas");
 gasto.etiquetas.forEach(etiqueta => {
-    spanEtiqueta = document.createElement("span");
-    spanEtiqueta.classList.add("gasto-etiquetas-etiquetas");
+    let spanEtiqueta = document.createElement("span");
+    spanEtiqueta.classList.add("gasto-etiquetas-etiqueta");
     spanEtiqueta.textContent=etiqueta;
     divEtiquetas.appendChild(spanEtiqueta);
 });
@@ -39,7 +39,7 @@ let divAgrup = document.createElement("div");
 divAgrup.classList.add("agrupacion");
 
 let titulo = document.createElement("h1");
-titulo.textContent = 'Gastos agrupados por' + periodo;
+titulo.textContent = 'Gastos agrupados por ' + periodo;
 divAgrup.appendChild(titulo);
 
 Object.entries(agrup).forEach(([clave, valor])=>{
