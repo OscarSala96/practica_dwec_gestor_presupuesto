@@ -54,6 +54,10 @@ botonBorrar.addEventListener("click", function(){
     borrarHandle.handleEvent(gasto);
 });
 
+let botonGastoEditar = document.createElement("button");
+botonGastoEditar.type="button";
+botonGastoEditar.classList="gasto-editar-formulario";
+botonGastoEditar.innerText="Editar (formulario)";
 
 divGasto.appendChild(botonEditar);
 divGasto.appendChild(botonBorrar);
@@ -152,4 +156,44 @@ function BorrarEtiquetasHandle(){
 
     }
 }
+
+function EditarFormularioHandle(){
+    this.handleEvent = function(gasto){
+        this.gasto= gasto;
+        let plantillaFormulario = document.getElementById("formulario-template").content.cloneNode(true);
+        var formulario = plantillaFormulario.querySelector("form");
+        this.gasto.descripcion = formulario.querySelector("descripcion").value;
+    }
+}
+function nuevoGastoWebFormulario(){
+    let plantillaFormulario = document.getElementById("formulario-template").content.cloneNode(true);
+    var formulario = plantillaFormulario.querySelector("form");
+    document.getElementById("anyadirgasto-formulario").disabled = true;
+    formulario.addEventListener("submit", function(evento){
+        evento.preventDefault();
+        let nuevoGasto= new gestionPresupuesto.CrearGasto(
+        formulario.descripcion.value,
+        parseFloat(formulario.valor.value),
+        formulario.fecha.value,
+        formulario.etiquetas.value,
+        );
+        gestionPresupuesto.anyadirGasto(nuevoGasto)
+        repintar();
+        document.getElementById("anyadirgasto-formulario").disabled = false;
+    })
+    function BorrarFormularioHandle(){
+        this.handleEvent = function(formulario){
+            this.formulario = formulario;
+            formulario.remove();
+            document.getElementById("anyadirgasto-formulario").disabled = false;
+        }
+    }
+    let borrarFormularioHandle = new BorrarFormularioHandle();
+    let botonCancelar = formulario.querySelector("button.cancelar");
+    botonCancelar.addEventListener("click", function(){
+       borrarFormularioHandle.handleEvent(formulario);
+    });
+    document.getElementById("controlesprincipales").appendChild(plantillaFormulario);
+}
+document.getElementById("anyadirgasto-formulario").addEventListener("click", nuevoGastoWebFormulario);
 export{mostrarDatoEnID, mostrarGastoWeb, mostrarGastosAgrupadosWeb, actualizarPresupuestoWeb};
