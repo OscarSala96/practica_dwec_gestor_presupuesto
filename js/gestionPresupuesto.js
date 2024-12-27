@@ -70,7 +70,7 @@ this.fecha = isNaN(Date.parse(fecha)) ? Date.now() : Date.parse(fecha);
             return fechaNueva.toISOString().substr(0,10);
           }
             }
-        }
+}
 function listarGastos(){
     return gastos;
 }
@@ -119,13 +119,12 @@ function filtrarGastos(datos){
             result = result && (d.descripcion.indexOf(datos.descripcionContiene) >= 0);
         }
         if(datos.etiquetasTiene){
-            let etiq = false;
-            for(let e of datos.etiquetasTiene){
-                if(d.etiquetas.indexOf(e) >= 0){
-                    etiq=true;
-                }               
+            for(let i = 0; i< d.etiquetas.length;i++){
+                if(!datos.etiquetasTiene.includes(d.etiquetas[i])){
+                result=false;
+                break;
+                }
             }
-            result = result && etiq;
         }
         return result;
     })
@@ -143,7 +142,10 @@ function agruparGastos(periodo, etiquetas, fechaDesde, fechaHasta){
         return acc;
         },{}
     )
-    
+}
+function transformarListadoEtiquetas(etiquetas){
+    let nuevasEtiquetas = etiquetas.split(/[,.:; ]+/);
+    return nuevasEtiquetas;
 }
 // NO MODIFICAR A PARTIR DE AQUÍ: exportación de funciones y objetos creados para poder ejecutar los tests.
 // Las funciones y objetos deben tener los nombres que se indican en el enunciado
@@ -158,5 +160,6 @@ export   {
     calcularTotalGastos,
     calcularBalance,
     filtrarGastos,
-    agruparGastos
+    agruparGastos,
+    transformarListadoEtiquetas
 }
