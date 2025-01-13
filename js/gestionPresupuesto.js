@@ -119,12 +119,13 @@ function filtrarGastos(datos){
             result = result && (d.descripcion.indexOf(datos.descripcionContiene) >= 0);
         }
         if(datos.etiquetasTiene){
-            for(let i = 0; i< d.etiquetas.length;i++){
-                if(!datos.etiquetasTiene.includes(d.etiquetas[i])){
-                result=false;
-                break;
-                }
+            let etiq = false;
+            for(let e of datos.etiquetasTiene){
+                if(d.etiquetas.indexOf(e) >= 0){
+                    etiq=true;
+                }               
             }
+            result = result && etiq;
         }
         return result;
     })
