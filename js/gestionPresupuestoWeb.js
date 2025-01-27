@@ -277,12 +277,15 @@ function guardarGastosWeb(evento){
 evento.preventDefault();
 let gastos=gestionPresupuesto.listarGastos();
 let gastosString= JSON.stringify(gastos);
-localStorage.setItem("GestorGastosDWEC", gastosString, null);
+localStorage.setItem("GestorGastosDWEC", gastosString);
 }
 function cargarGastosWeb(evento){
     evento.preventDefault();
-    let gastosString = localStorage.getItem("GestorGastosDWEC");
-    let gastos=JSON.parse(gastosString);
+    let gastos=[];
+    let gastosCargados = localStorage.getItem("GestorGastosDWEC");
+    if(gastosCargados){
+    gastos=JSON.parse(gastosCargados);
+    }
     gestionPresupuesto.cargarGastos(gastos);
     repintar();
 }
