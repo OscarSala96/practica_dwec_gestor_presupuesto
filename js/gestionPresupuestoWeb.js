@@ -273,7 +273,22 @@ function filtrarGastosWeb(evento){
     mostrarGastoWeb('listado-gastos-completo', gasto);
     }
 }
+function guardarGastosWeb(evento){
+evento.preventDefault();
+let gastos=gestionPresupuesto.listarGastos();
+let gastosString= JSON.stringify(gastos);
+localStorage.setItem("GestorGastosDWEC", gastosString, null);
+}
+function cargarGastosWeb(evento){
+    evento.preventDefault();
+    let gastosString = localStorage.getItem("GestorGastosDWEC");
+    let gastos=JSON.parse(gastosString);
+    gestionPresupuesto.cargarGastos(gastos);
+    repintar();
+}
 
 document.getElementById("anyadirgasto-formulario").addEventListener("click", nuevoGastoWebFormulario);
 document.getElementById("formulario-filtrado").addEventListener("submit", filtrarGastosWeb);
+document.getElementById("guardar-gastos").addEventListener("click", guardarGastosWeb);
+document.getElementById("cargar-gastos").addEventListener("click", cargarGastosWeb);
 export{mostrarDatoEnID, mostrarGastoWeb, mostrarGastosAgrupadosWeb, actualizarPresupuestoWeb};
