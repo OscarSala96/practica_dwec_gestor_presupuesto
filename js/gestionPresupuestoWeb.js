@@ -290,8 +290,26 @@ function cargarGastosWeb(evento){
     repintar();
 }
 
+async function cargarGastosApi(evento){
+    evento.preventDefault();
+    let nombre = document.getElementById('nombre_usuario').value;
+    let url = `https://suhhtqjccd.execute-api.eu-west-1.amazonaws.com/latest/${nombre}`;
+    let respuesta = await fetch(url);
+    if(respuesta.ok){
+        let gastos = await respuesta.json();
+        gestionPresupuesto.cargarGastos(gastos);
+        repintar(); 
+    }
+    else{
+        console.log("Error de red")
+    }
+   
+
+}
+
 document.getElementById("anyadirgasto-formulario").addEventListener("click", nuevoGastoWebFormulario);
 document.getElementById("formulario-filtrado").addEventListener("submit", filtrarGastosWeb);
 document.getElementById("guardar-gastos").addEventListener("click", guardarGastosWeb);
 document.getElementById("cargar-gastos").addEventListener("click", cargarGastosWeb);
+document.getElementById('cargar-gastos-api').addEventListener('click', cargarGastosApi);
 export{mostrarDatoEnID, mostrarGastoWeb, mostrarGastosAgrupadosWeb, actualizarPresupuestoWeb};
