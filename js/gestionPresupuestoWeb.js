@@ -54,6 +54,26 @@ botonBorrar.addEventListener("click", function(){
     borrarHandle.handleEvent(gasto);
 });
 
+let botonBorrarApi = document.createElement("button");
+botonBorrarApi.type="button";
+botonBorrarApi.classList.add("gasto-borrar-api");
+botonBorrarApi.innerText="Borrar (API)"
+botonBorrarApi.addEventListener("click", async function(){
+    let nombre = document.getElementById("nombre_usuario").value;
+    let respuesta = await fetch(
+        `https://suhhtqjccd.execute-api.eu-west-1.amazonaws.com/latest/${nombre}`,
+        {
+        method: 'DELETE'
+        })
+     if(respuesta.ok){
+        cargarGastosApi();
+        console.log("Borrado con éxito");
+     }
+     else{
+        throw("Ha habido un error");
+     }
+});
+
 let botonGastoEditar = document.createElement("button");
 botonGastoEditar.type="button";
 botonGastoEditar.classList="gasto-editar-formulario";
@@ -61,10 +81,11 @@ botonGastoEditar.innerText="Editar (formulario)";
 let editarHandleFormulario = new EditarHandleFormulario()
 botonGastoEditar.addEventListener("click", function(){
     editarHandleFormulario.handleEvent(gasto);
-})
+});
 
 divGasto.appendChild(botonEditar);
 divGasto.appendChild(botonBorrar);
+divGasto.appendChild(botonBorrarApi);
 divGasto.appendChild(botonGastoEditar);
 idElemento.appendChild(divGasto);
 }
@@ -191,23 +212,48 @@ function EditarHandleFormulario(){
             }
             repintar();
             }}
-            function BorrarFormularioHandle(){
-                this.handleEvent = function(formulario){
-                    this.formulario = formulario;
-                    formulario.remove();
-                }}
-            let borrarFormularioHandle = new BorrarFormularioHandle();
-            let botonCancelar = formulario.querySelector("button.cancelar");
-            botonCancelar.addEventListener("click", function(){
-               borrarFormularioHandle.handleEvent(formulario);
-               boton.disabled=false;
-            });
-            let botonEnviarHandle = new botonEditar();
-            formulario.addEventListener("submit", function(){
-                botonEnviarHandle.handleEvent(gasto);
-            })
-        }
+        function BorrarFormularioHandle(){
+            this.handleEvent = function(formulario){
+                this.formulario = formulario;
+                formulario.remove();
+            }}
+        let borrarFormularioHandle = new BorrarFormularioHandle();
+        let botonCancelar = formulario.querySelector("button.cancelar");
+        botonCancelar.addEventListener("click", function(){
+            borrarFormularioHandle.handleEvent(formulario);
+            boton.disabled=false;
+        });
+        let botonEnviarHandle = new botonEditar();
+        formulario.addEventListener("submit", function(){
+            botonEnviarHandle.handleEvent(gasto);
+        })
+        let botonEnviarApi = formulario.querySelector("button.gasto-enviar-api");
+        botonEnviarApi.addEventListener("click", async function() {
+            let nombre = document.getElementById("nombre_usuario").value;
+            let nuevoGasto={
+                descripcion:formulario.descripcion.value,
+                valor: parseFloat(formulario.valor.value),
+                fecha: formulario.fecha.value,
+                etiquetas: formulario.etiquetas.value
+            };
+            let respuesta = await fetch (
+                `https://suhhtqjccd.execute-api.eu-west-1.amazonaws.com/latest/${nombre}`,
+                {
+                    method:"PUT",
+                    headers:{'Content-Type': 'application/json;charset=utf-8'
+                    },
+                    body: JSON.stringify(nuevoGasto)
+                });
+                if(respuesta.ok){
+                    console.log("Petición PUT realizada con éxito");
+                    cargarGastosApi();
+                }
+                else{
+                    console.log("Error de red");
+                }
+        });
     }
+}
 function nuevoGastoWebFormulario(){
     let plantillaFormulario = document.getElementById("formulario-template").content.cloneNode(true);
     var formulario = plantillaFormulario.querySelector("form");
@@ -236,7 +282,32 @@ function nuevoGastoWebFormulario(){
     botonCancelar.addEventListener("click", function(){
        borrarFormularioHandle.handleEvent(formulario);
     });
-    document.getElementById("controlesprincipales").appendChild(plantillaFormulario);
+    
+    let botonApi = formulario.querySelector("button.gasto-enviar-api");
+    botonApi.addEventListener("click", async function () {
+    let nombre = document.getElementById("nombre_usuario").value
+    let descripcion = formulario.descripcion.value;
+    let valor = parseFloat(formulario.valor.value);
+    let fecha= formulario.fecha.value;
+    let etiquetas = formulario.etiquetas.value;
+    let nuevoGasto= new gestionPresupuesto.CrearGasto(descripcion,valor,fecha,etiquetas)
+    let respuesta = await fetch(`https://suhhtqjccd.execute-api.eu-west-1.amazonaws.com/latest/${nombre}`,
+        {
+            method:`POST`,
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify(nuevoGasto)
+        });
+    if(respuesta.ok){
+        console.log("Petición POST realizada con éxito");
+        cargarGastosApi();
+    }
+    else{
+        console.log("Error de red");
+    }
+})
+document.getElementById("controlesprincipales").appendChild(plantillaFormulario);
 }
 function filtrarGastosWeb(evento){
     evento.preventDefault();
@@ -290,8 +361,7 @@ function cargarGastosWeb(evento){
     repintar();
 }
 
-async function cargarGastosApi(evento){
-    evento.preventDefault();
+async function cargarGastosApi(){
     let nombre = document.getElementById('nombre_usuario').value;
     let url = `https://suhhtqjccd.execute-api.eu-west-1.amazonaws.com/latest/${nombre}`;
     let respuesta = await fetch(url);
@@ -303,8 +373,6 @@ async function cargarGastosApi(evento){
     else{
         console.log("Error de red")
     }
-   
-
 }
 
 document.getElementById("anyadirgasto-formulario").addEventListener("click", nuevoGastoWebFormulario);
