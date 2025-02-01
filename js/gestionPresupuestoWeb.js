@@ -61,7 +61,7 @@ botonBorrarApi.innerText="Borrar (API)"
 botonBorrarApi.addEventListener("click", async function(){
     let nombre = document.getElementById("nombre_usuario").value;
     let respuesta = await fetch(
-        `https://suhhtqjccd.execute-api.eu-west-1.amazonaws.com/latest/${nombre}`,
+        `https://suhhtqjccd.execute-api.eu-west-1.amazonaws.com/latest/${nombre}/${gasto.gastoId}`,
         {
         method: 'DELETE'
         })
@@ -237,7 +237,7 @@ function EditarHandleFormulario(){
                 etiquetas: formulario.etiquetas.value
             };
             let respuesta = await fetch (
-                `https://suhhtqjccd.execute-api.eu-west-1.amazonaws.com/latest/${nombre}`,
+                `https://suhhtqjccd.execute-api.eu-west-1.amazonaws.com/latest/${nombre}/${gasto.gastoId}`,
                 {
                     method:"PUT",
                     headers:{'Content-Type': 'application/json;charset=utf-8'
